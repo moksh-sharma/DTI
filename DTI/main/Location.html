@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google Maps Terrain View</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin: 20px 0;
+            color: #ffffff;
+        }
+
+        #controls {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 200px;
+            margin-right: 10px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: #333;
+            color: #ffffff;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1565c0;
+        }
+
+        #map {
+            height: 500px;
+            width: 80%;
+            margin: 0 auto;
+            border: 1px solid #333;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            input[type="text"] {
+                width: 150px;
+            }
+
+            button {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+
+            #map {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>MAP</h1>
+
+    <div id="controls">
+        <input type="text" id="city" placeholder="Enter City Name" />
+        <button onclick="searchCity()">Search</button>
+    </div>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([40.7128, -74.006], 13);
+
+        L.tileLayer('https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+            attribution: '&copy; <a href="https://maps.google.com">Google Maps</a>',
+            maxZoom: 20,
+        }).addTo(map);
+
+        let marker;
+
+        function searchCity() {
+            const city = document.getElementById('city').value;
+            if (!city) {
+                alert('Please enter a city name.');
+                return;
+            }
+
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        alert('City not found. Please try again.');
+                        return;
+                    }
+
+                    const lat = data[0].lat;
+                    const lon = data[0].lon;
+                    map.setView([lat, lon], 13);
+
+                    if (marker) {
+                        map.removeLayer(marker);
+                    }
+
+                    marker = L.marker([lat, lon]).addTo(map)
+                        .bindPopup(city)
+                        .openPopup();
+                })
+                .catch(error => {
+                    alert('Error fetching location data. Please try again.');
+                });
+        }
+
+        function detectCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+
+                        map.setView([lat, lng], 13);
+
+                        if (marker) {
+                            map.removeLayer(marker);
+                        }
+
+                        marker = L.marker([lat, lng]).addTo(map)
+                            .bindPopup('You are here!')
+                            .openPopup();
+                    },
+                    (error) => {
+                        alert('Error detecting current location: ' + error.message);
+                    }
+                );
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+
+        window.onload = detectCurrentLocation;
+    </script>
+</body>
+
+</html>
