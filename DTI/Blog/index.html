@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .home-btn-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .home-btn {
+      display: inline-block;
+      padding: 8px 20px;
+      background: linear-gradient(135deg, #ff4b5c 0%, #ff2836 100%);
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      border-radius: 30px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 75, 92, 0.3);
+    }
+
+    .home-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 75, 92, 0.4);
+      color: #ffffff;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      background: linear-gradient(135deg, #ff2836 0%, #ff4b5c 100%);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="home-btn-container">
+    <a href="../index.html" class="home-btn">🏠 Home</a>
+  </div>
+  <div class="container">
+    <div class="header">
+      <h1 class="heading">✍️ Blog Notes</h1>
+      <p class="info-text">Double click on a note to remove it</p>
+    </div>
+
+    <div class="app" id="app">
+      <button class="btn" id="btn">
+        <span class="btn-text">Add Note</span>
+        <span class="btn-icon">+</span>
+      </button>
+    </div>
+  </div>
+  <script src="index.js"></script>
+</body>
+
+</html>
