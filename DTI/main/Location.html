@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>College Location Maps</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(255, 75, 92, 0.6);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar h3 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #ff4b5c;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 10px 15px;
+            transition: all 0.3s ease-in-out;
+            border-radius: 5px;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            background: linear-gradient(135deg, #ff2836 0%, #ff4b5c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 75, 92, 0.4);
+        }
+
+        body {
+            min-height: 100vh;
+            background: #121212;
+            color: white;
+            padding: 20px;
+            padding-top: 80px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid #ff4b5c;
+            box-shadow: 0 20px 40px rgba(255, 75, 92, 0.2);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 75, 92, 0.1) 0%, transparent 50%);
+            animation: pulse 4s infinite;
+            z-index: 0;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #ff4b5c;
+            text-shadow: 0 0 10px rgba(255, 75, 92, 0.4);
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        #controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        input[type="text"] {
+            padding: 12px 20px;
+            width: 300px;
+            border: 2px solid rgba(255, 75, 92, 0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #ff4b5c;
+            box-shadow: 0 0 0 3px rgba(255, 75, 92, 0.2);
+            outline: none;
+        }
+
+        input[type="text"]::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        button {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #ff4b5c 0%, #ff2836 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(255, 75, 92, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 75, 92, 0.4);
+            background: linear-gradient(135deg, #ff2836 0%, #ff4b5c 100%);
+        }
+
+        #map {
+            height: 500px;
+            width: 100%;
+            margin: 0 auto;
+            border: 2px solid rgba(255, 75, 92, 0.2);
+            box-shadow: 0 20px 40px rgba(255, 75, 92, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            #controls {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            input[type="text"] {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            #map {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <h3>College Maps</h3>
+        <ul class="nav-links" style="margin-left: auto;">
+            <li><a href="../index.html"
+                    style="background: linear-gradient(135deg, #ff4b5c 0%, #ff2836 100%); border-radius: 30px; box-shadow: 0 4px 15px rgba(255, 75, 92, 0.3);">🏠
+                    Home</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ College Location Maps</h1>
+        </div>
+
+        <div id="controls">
+            <input type="text" id="city" placeholder="Enter College or City Name" />
+            <button onclick="searchCity()">Search Location</button>
+        </div>
+
+        <div id="map"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([40.7128, -74.006], 13);
+
+        L.tileLayer('https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+            attribution: '&copy; <a href="https://maps.google.com">Google Maps</a>',
+            maxZoom: 20,
+        }).addTo(map);
+
+        let marker;
+
+        function searchCity() {
+            const city = document.getElementById('city').value;
+            if (!city) {
+                alert('Please enter a location name.');
+                return;
+            }
+
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        alert('Location not found. Please try again.');
+                        return;
+                    }
+
+                    const lat = data[0].lat;
+                    const lon = data[0].lon;
+                    map.setView([lat, lon], 13);
+
+                    if (marker) {
+                        map.removeLayer(marker);
+                    }
+
+                    marker = L.marker([lat, lon]).addTo(map)
+                        .bindPopup(city)
+                        .openPopup();
+                })
+                .catch(error => {
+                    alert('Error fetching location data. Please try again.');
+                });
+        }
+
+        function detectCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+
+                        map.setView([lat, lng], 13);
+
+                        if (marker) {
+                            map.removeLayer(marker);
+                        }
+
+                        marker = L.marker([lat, lng]).addTo(map)
+                            .bindPopup('You are here!')
+                            .openPopup();
+                    },
+                    (error) => {
+                        alert('Error detecting current location: ' + error.message);
+                    }
+                );
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+
+        window.onload = detectCurrentLocation;
+    </script>
+</body>
+
+</html>

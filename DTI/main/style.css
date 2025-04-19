@@ -1,0 +1,732 @@
+@import url('https://fonts.googleapis.com/css?family=Alata&display=swap');
+
+html {
+    scroll-behavior: smooth;
+}
+
+.clock {
+    display: flex;
+    margin-right: 70px;
+    float: right;
+    position: relative;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+
+
+.menu a {
+    display: block;
+    font-size: 1.5rem;
+
+    transition: all 0.2s linear;
+    text-decoration: none;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: white;
+    width: 100%;
+    height: 100%;
+    transition: all 0.3s linear;
+    transform: translate(-100%);
+}
+
+.show-sidebar {
+    transform: translate(0);
+}
+
+.fa-bars {
+    position: fixed;
+    top: 2rem;
+    right: 3rem;
+    color: #e94949;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.fa-bars:hover {
+    color: black;
+}
+
+.fa-times {
+    font-size: 1.5rem;
+    color: #e94949;
+    cursor: pointer;
+}
+
+.fa-times:hover {
+    color: black;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+}
+
+.logo {
+    margin-left: -15px;
+}
+
+@media (min-width: 676px) {
+    .sidebar {
+        width: 500px;
+    }
+}
+
+.menu a:hover {
+    background: #f8a5a5;
+    padding-left: 1.7rem;
+}
+
+.clock div {
+
+    position: relative;
+}
+
+.clock span {
+    width: 100px;
+    height: 80px;
+    background: slateblue;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.clock .text {
+    height: 30px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background: darkblue;
+    opacity: 0.8;
+}
+
+.clock #ampm {
+    bottom: 0;
+    position: absolute;
+    width: 60px;
+    height: 30px;
+    font-size: 20px;
+    background: green;
+}
+
+.spinner {
+    margin: 100px auto 0;
+    width: 70px;
+    text-align: center;
+}
+
+.spinner>div {
+    width: 18px;
+    height: 18px;
+    background-color: #333;
+
+    border-radius: 100%;
+    display: inline;
+    -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+    -webkit-animation-delay: -0.16s;
+    animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+
+    0%,
+    80%,
+    100% {
+        -webkit-transform: scale(0)
+    }
+
+    40% {
+        -webkit-transform: scale(1.0)
+    }
+}
+
+@keyframes sk-bouncedelay {
+
+    0%,
+    80%,
+    100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+
+    40% {
+        -webkit-transform: scale(1.0);
+        transform: scale(1.0);
+    }
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Alata';
+}
+
+.animate {
+    opacity: 0;
+    transition: 1s;
+}
+
+.fade {
+    opacity: 1;
+    transition: 2s;
+}
+
+.navbar {
+    z-index: 1;
+    left: 0;
+    display: flex;
+    height: 100px;
+    width: 100%;
+    font-size: 70px;
+    margin-top: 20px;
+    align-items: center;
+}
+
+.pace {
+    -webkit-pointer-events: none;
+    pointer-events: none;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.pace-inactive {
+    display: none;
+}
+
+.pace .pace-progress {
+    background: rgb(255, 0, 191);
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    right: 100%;
+    width: 100%;
+    height: 2px;
+}
+
+progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    background-color: transparent;
+    color: rgb(255, 0, 183);
+}
+
+progress::-webkit-progress-bar {
+    background-color: transparent;
+}
+
+progress::-webkit-progress-value {
+    background-color: rgb(255, 0, 170);
+}
+
+progress::-moz-progress-bar {
+    background-color: rgb(255, 0, 204);
+}
+
+.navbar h3 {
+    margin-left: 10%;
+    flex: 3;
+}
+
+.navbar .menu {
+    margin-right: 10%;
+}
+
+.navbar .menu .nav-links {
+    display: flex;
+}
+
+.navbar .menu .nav-links li {
+    padding: 10px 10px;
+    list-style-type: none;
+    font-size: 5px;
+}
+
+.navbar .menu .nav-links li a {
+    text-decoration: none;
+
+}
+
+.home {
+    height: auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 120px;
+}
+
+.home .text {
+    flex: 1;
+    margin-left: 12.5%;
+}
+
+.home .text h3 {
+    font-weight: bolder;
+    font-size: 60px;
+}
+
+.home .text p {
+    font-size: 50px;
+}
+
+.home .graphic {
+    flex: 1;
+}
+
+.home .graphic img {
+    height: 50% !important;
+    width: 60% !important;
+    border-radius: 50% !important;
+    margin-left: 10% !important;
+    margin-top: 30px !important;
+}
+
+@keyframes move {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-20px);
+    }
+}
+
+.scroll-down {
+    margin-top: 50px;
+    height: 100px;
+    width: 100%;
+    text-align: center;
+}
+
+.about {
+    overflow: hidden;
+    height: 50%;
+    width: 100%;
+    margin-top: 70px;
+    text-align: center;
+}
+
+.about h3 {
+    font-size: 40px;
+}
+
+.about .card-layout {
+    display: flex;
+    margin-top: 50px;
+    margin-bottom: 100px;
+    align-items: flex-start;
+}
+
+.about .card-layout .card h3 {
+    font-size: 30px;
+}
+
+.about .card-layout .card {
+    flex: 1;
+    background: #eee;
+    margin-left: 30px;
+    margin-right: 30px;
+    padding: 20px;
+    text-align: left;
+    border-radius: 3px;
+    height: auto;
+    padding-bottom: 40px;
+}
+
+.about .card-layout .card .heading {
+    display: flex;
+    align-items: center;
+}
+
+.about .card-layout .card p {
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.about .card-layout .image {
+    background-image: url('https://www.biography.com/.image/t_share/MTQ1MjMwNzY0NDkxOTQxMjcy/mahatma-gandhi---a-legacy-of-peace.jpg');
+    height: 100%;
+    width: 100%;
+}
+
+.about .card-layout .card button {
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #eee;
+    outline: none;
+    border-radius: 3px;
+    color: #333;
+    padding: 10px 20px;
+    border: 1px solid #333;
+}
+
+.about .card-layout .card button svg {
+    margin-right: 5px;
+    background: #333;
+}
+
+.about .card-layout .card>* {
+    margin-bottom: 10px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 4px;
+    max-width: 75%;
+}
+
+.column {
+    flex: 25%;
+    width: 33%;
+    padding: 0 4px;
+}
+
+.column img {
+    margin-top: 8px;
+    vertical-align: middle;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.gallery {
+    height: auto;
+    width: 100%;
+    text-align: center;
+    margin-top: 100px;
+}
+
+.gallery h3 {
+    font-size: 60px;
+    margin-bottom: 40px;
+}
+
+.tiles {
+    display: flex;
+    justify-content: center;
+}
+
+.quotes {
+    margin-top: 5%;
+    height: auto;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.quotes h3 {
+    font-size: 50px;
+    margin-bottom: 50px;
+}
+
+.quotes-layout {
+    display: flex;
+    justify-content: center;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.quotes-layout .quote {
+    text-align: left;
+    margin-left: 30px;
+    background: #eee;
+    padding: 30px 20px;
+    margin-top: 40px;
+    border-radius: 5px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0%;
+    top: 0%;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 1% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+}
+
+.modal-content p {
+    margin-bottom: 20px;
+}
+
+.modal-content h3 {
+    font-size: 30px;
+    margin-bottom: 7px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/*
+.tile {
+  position: relative;
+  width: 100%;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .5s ease;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.tile:hover .overlay {
+  opacity: 1;
+}
+
+.text {
+  color: white;
+  font-size: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+*/
+
+/*
+.quotes .read-more {
+	margin-top: 100px;
+	text-align: center;
+	text-decoration: none;
+	margin-bottom: 50px;
+}
+
+.quotes .read-more a {
+	text-decoration: none;
+	padding: 10px 20px;
+	border: 1px solid #333;
+}
+*/
+
+.accomplishments {
+    height: auto;
+    text-align: center;
+    margin-top: 100px;
+}
+
+.accomplishments h3 {
+    font-size: 80px;
+}
+
+.list {
+    margin-top: 100px;
+    font-size: 30px;
+    width: 80%;
+    margin-right: 10%;
+    margin-left: 10%;
+    z-index: 10;
+}
+
+.qt {
+    margin-top: 40px;
+    font-size: 25px;
+}
+
+
+.list .achievment {
+    margin-top: 50px;
+    text-align: left;
+    background: #eee;
+    padding: 20px 30px;
+    border-radius: 5px;
+}
+
+.list .achievment h3 {
+    display: flex;
+    align-items: center;
+    font-size: 25px;
+}
+
+.list .achievment svg {
+    background: #333;
+    fill: #fff;
+    padding: 10px;
+    border-radius: 50px;
+    height: 20px;
+    width: 20px;
+    margin-right: 20px;
+}
+
+.list .achievment h3 {
+    font-size: 20px;
+}
+
+.list .achievment p {
+    margin-top: 10px;
+    font-size: 19px;
+}
+
+.about .card-layout .card .border-bottom {
+    border-bottom: 5px solid dodgerblue;
+}
+
+@media screen and (max-width: 800px) {
+    .column {
+        flex: 50%;
+        max-width: 50%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .column {
+        flex: 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar .menu {
+        display: none;
+    }
+
+    .achievment svg {
+        height: 50px;
+        width: 50px;
+        border-radius: 50px;
+    }
+
+    .navbar {
+        display: none;
+        margin-left: -8%;
+        text-align: center;
+    }
+
+    .card-layout {
+        flex-direction: column;
+    }
+
+    .card-layout .card {
+        margin-top: 20px;
+    }
+
+    .home {
+        margin-top: 100px;
+        display: block;
+        text-align: center;
+    }
+
+    .home .text {
+        display: block;
+        margin-left: -2.5%;
+    }
+
+    .home .graphic {
+        margin-top: 20px;
+        margin-left: -10%;
+    }
+
+    .scroll-down {
+        margin-top: 70px;
+    }
+
+    .gallery {
+        margin-top: 100px;
+        margin-left: -10%;
+    }
+
+    .gallery h3 {
+        margin-left: 20%;
+    }
+
+    .tiles {
+        margin-left: 25%;
+    }
+
+    .quotes-layout {
+        display: block;
+    }
+
+    .modal-content {
+        overflow: auto;
+    }
+
+    .list .achievment {
+        display: block;
+        text-align: left;
+        margin-top: 100px;
+        margin-bottom: 100px;
+        margin: 0 auto;
+    }
+
+    .list .achievment svg {
+        height: 30px;
+        width: 30px;
+        margin-left: 0;
+    }
+
+    .list .achievment svg {
+        height: 17px;
+        width: 34px;
+        border-radius: 50px;
+    }
+}

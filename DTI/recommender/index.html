@@ -1,0 +1,2010 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Engineering College Recommender</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --darker-bg: #0c1320;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-color: #ff4b5c;
+            --accent-hover: #ff2836;
+            --success-color: #10b981;
+            --danger-color: #ff4b5c;
+            --info-color: #ff4b5c;
+            --gradient-start: #ff4b5c;
+            --gradient-end: #ff2836;
+        }
+
+        body {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            background: #121212;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .header {
+            margin-bottom: 2rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(255, 75, 92, 0.2);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 2px solid #ff4b5c;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 75, 92, 0.1) 0%, transparent 50%);
+            animation: pulse 4s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+        }
+
+        .header h1 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(255, 75, 92, 0.1);
+            border: none;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 75, 92, 0.2);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 75, 92, 0.2);
+        }
+
+        .card-header {
+            font-weight: 600;
+            border-radius: 20px 20px 0 0 !important;
+            padding: 1.5rem;
+            background: rgba(255, 75, 92, 0.1) !important;
+            border-bottom: 1px solid rgba(255, 75, 92, 0.2);
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .reach {
+            border-left: 4px solid var(--danger-color);
+            background: linear-gradient(to right, rgba(255, 75, 92, 0.1), rgba(0, 0, 0, 0.7));
+        }
+
+        .match {
+            border-left: 4px solid var(--success-color);
+            background: linear-gradient(to right, rgba(16, 185, 129, 0.1), rgba(0, 0, 0, 0.7));
+        }
+
+        .safety {
+            border-left: 4px solid var(--info-color);
+            background: linear-gradient(to right, rgba(255, 75, 92, 0.1), rgba(0, 0, 0, 0.7));
+        }
+
+        .match-score {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ff4b5c;
+            background: rgba(255, 75, 92, 0.1);
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 75, 92, 0.2);
+        }
+
+        .explanation-list {
+            padding-left: 1.2rem;
+        }
+
+        .loading {
+            text-align: center;
+            margin: 2rem 0;
+            display: none;
+        }
+
+        .results-heading {
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            color: #ff4b5c;
+            font-weight: 600;
+            text-align: center;
+            font-size: 2rem;
+            text-shadow: 0 0 10px rgba(255, 75, 92, 0.4);
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .results-heading::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 3px;
+        }
+
+        #results {
+            display: none;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #ff4b5c;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control,
+        .form-select {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 75, 92, 0.2);
+            color: white;
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-color: #ff4b5c;
+            color: white;
+            box-shadow: 0 0 0 3px rgba(255, 75, 92, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff4b5c 0%, #ff2836 100%);
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(255, 75, 92, 0.3);
+        }
+
+        .btn-primary:hover {
+            color: #ffffff !important;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(255, 75, 92, 0.4) !important;
+            background: linear-gradient(135deg, #ff2836 0%, #ff4b5c 100%) !important;
+        }
+
+        .form-check-label {
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8);
+            transition: color 0.3s ease;
+        }
+
+        .badge {
+            padding: 0.6rem 1.2rem;
+            font-weight: 500;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .college-details {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.8rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .college-details:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .college-details h5 {
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            font-size: 1.3rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .college-details h5::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 2px;
+        }
+
+        .college-details ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .college-details li {
+            margin-bottom: 1rem;
+            padding-left: 1.8rem;
+            position: relative;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+
+        .college-details li:hover {
+            color: var(--text-primary);
+        }
+
+        .college-details li:before {
+            content: "•";
+            color: var(--accent-color);
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+
+        .card-header.bg-primary {
+            background: linear-gradient(135deg, #ff4b5c 0%, #ff2836 100%) !important;
+        }
+
+        .form-check-input:checked {
+            background-color: #ff4b5c;
+            border-color: #ff4b5c;
+        }
+
+        .text-muted {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #ff4b5c !important;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--darker-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff4b5c;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff2836;
+        }
+
+        /* Glass morphism effect for cards */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Fade in animation for results */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #results {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Smooth transitions for all interactive elements */
+        * {
+            transition: background-color 0.3s ease,
+                border-color 0.3s ease,
+                color 0.3s ease,
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Chatbot Styles */
+        .chat-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 75, 92, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 75, 92, 0.4);
+        }
+
+        .chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 500px;
+            background: var(--darker-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            border: 1px solid rgba(255, 75, 92, 0.2);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 15px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .close-chat {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin: 5px 0;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .user-message {
+            background: var(--accent-color);
+            color: white;
+            align-self: flex-end;
+            border-radius: 15px 15px 0 15px;
+        }
+
+        .bot-message {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border-radius: 15px 15px 15px 0;
+        }
+
+        .chat-input {
+            padding: 15px;
+            background: var(--darker-bg);
+            border-top: 1px solid rgba(255, 75, 92, 0.2);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid rgba(255, 75, 92, 0.2);
+            border-radius: 20px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        .chat-input button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input button:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Chat Button -->
+    <button class="chat-button" onclick="toggleChat()">💬</button>
+
+    <!-- Chat Window -->
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <h3>College Admission Assistant</h3>
+            <button class="close-chat" onclick="toggleChat()">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                Hello! I'm your college admission assistant. How can I help you today? You can ask me about:
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>JEE preparation tips</li>
+                    <li>College selection criteria</li>
+                    <li>Admission process</li>
+                    <li>Branch selection advice</li>
+                </ul>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <a href="../index.html" class="btn-primary"
+            style="position: fixed; top: 20px; right: 20px; z-index: 1000; display: inline-block; padding: 8px 20px; text-decoration: none; border-radius: 30px; box-shadow: 0 4px 15px rgba(255, 75, 92, 0.3); color: rgba(255, 255, 255, 0.8); transition: all 0.3s ease;">🏠
+            Home</a>
+        <div class="header">
+            <h1>Indian Engineering College Recommender</h1>
+            <p class="lead">Find the perfect engineering college based on your JEE score and preferences</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        Enter Your Preferences
+                    </div>
+                    <div class="card-body">
+                        <form id="preference-form">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="jee_percentile" class="form-label">JEE Main Percentile</label>
+                                    <input type="number" class="form-control" id="jee_percentile" name="jee_percentile"
+                                        min="0" max="100" step="0.1">
+                                    <small class="text-muted">Enter your JEE Main percentile (0-100)</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="board_percentage" class="form-label">12th Class Board Percentage</label>
+                                    <input type="number" class="form-control" id="board_percentage"
+                                        name="board_percentage" min="0" max="100" step="0.1">
+                                    <small class="text-muted">Enter your 12th class board percentage (0-100)</small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="budget" class="form-label">Max Annual Tuition Budget (₹)</label>
+                                    <input type="number" class="form-control" id="budget" name="budget" min="0"
+                                        step="10000">
+                                    <small class="text-muted">Enter your budget in Indian Rupees</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="preferred_location" class="form-label">Preferred Region</label>
+                                    <select class="form-select" id="preferred_location" name="preferred_location">
+                                        <option value="">No Preference</option>
+                                        <option value="North">North India</option>
+                                        <option value="South">South India</option>
+                                        <option value="East">East India</option>
+                                        <option value="West">West India</option>
+                                        <option value="Central">Central India</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Preferred Branches</label>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="Computer Science"
+                                                id="branch_cs" name="preferred_majors">
+                                            <label class="form-check-label" for="branch_cs">Computer Science</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="Electrical"
+                                                id="branch_electrical" name="preferred_majors">
+                                            <label class="form-check-label" for="branch_electrical">Electrical</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="Mechanical"
+                                                id="branch_mechanical" name="preferred_majors">
+                                            <label class="form-check-label" for="branch_mechanical">Mechanical</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="Civil"
+                                                id="branch_civil" name="preferred_majors">
+                                            <label class="form-check-label" for="branch_civil">Civil</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="Electronics"
+                                                id="branch_electronics" name="preferred_majors">
+                                            <label class="form-check-label" for="branch_electronics">Electronics</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="IT" id="branch_it"
+                                                name="preferred_majors">
+                                            <label class="form-check-label" for="branch_it">Information
+                                                Technology</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Get College Recommendations</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>Finding your perfect college match...</p>
+                </div>
+
+                <h2 class="results-heading">Your Top College Matches</h2>
+                <div id="results" class="mt-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this HTML section after the recommendation form -->
+    <div id="previousRecommendations" class="alert alert-info" style="display: none;">
+        <h4>Your Previous Preferences</h4>
+        <p>Last updated: <span id="lastUpdated"></span></p>
+        <p>Your recommendations are personalized based on your saved preferences. You can update them at any time.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // College data
+        const colleges = [
+            // Top Government Colleges
+            { name: 'IIT Bombay', acceptance_rate: 0.01, jee_percentile: 98, board_percentage: 95, tuition: 250000, location: 'West', majors: 'Computer Science, Electrical, Mechanical' },
+            { name: 'IIT Delhi', acceptance_rate: 0.01, jee_percentile: 97, board_percentage: 94, tuition: 250000, location: 'North', majors: 'Computer Science, Electrical, Mechanical' },
+            { name: 'IIT Madras', acceptance_rate: 0.01, jee_percentile: 97, board_percentage: 94, tuition: 250000, location: 'South', majors: 'Computer Science, Electrical, Civil' },
+            { name: 'IIT Kanpur', acceptance_rate: 0.01, jee_percentile: 97, board_percentage: 94, tuition: 250000, location: 'Central', majors: 'Computer Science, Electrical, Mechanical' },
+            { name: 'IIT Kharagpur', acceptance_rate: 0.01, jee_percentile: 97, board_percentage: 94, tuition: 250000, location: 'East', majors: 'Computer Science, Electrical, Civil' },
+            { name: 'IIT Roorkee', acceptance_rate: 0.01, jee_percentile: 97, board_percentage: 94, tuition: 250000, location: 'North', majors: 'Computer Science, Electrical, Civil' },
+            { name: 'BITS Pilani', acceptance_rate: 0.05, jee_percentile: 95, board_percentage: 93, tuition: 450000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'NIT Trichy', acceptance_rate: 0.02, jee_percentile: 94, board_percentage: 92, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'IIIT Hyderabad', acceptance_rate: 0.02, jee_percentile: 94, board_percentage: 92, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, IT' },
+            { name: 'DTU Delhi', acceptance_rate: 0.03, jee_percentile: 93, board_percentage: 91, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'NIT Surathkal', acceptance_rate: 0.02, jee_percentile: 93, board_percentage: 91, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'IIT Guwahati', acceptance_rate: 0.01, jee_percentile: 97, board_percentage: 94, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'IIT Hyderabad', acceptance_rate: 0.01, jee_percentile: 96, board_percentage: 93, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'IIT Indore', acceptance_rate: 0.01, jee_percentile: 96, board_percentage: 93, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'IIT BHU', acceptance_rate: 0.01, jee_percentile: 97, board_percentage: 94, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'IIT Ropar', acceptance_rate: 0.01, jee_percentile: 96, board_percentage: 93, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, Mechanical' },
+
+            // Additional Government Colleges
+            { name: 'NIT Warangal', acceptance_rate: 0.02, jee_percentile: 93, board_percentage: 91, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'NIT Calicut', acceptance_rate: 0.02, jee_percentile: 92, board_percentage: 90, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'NIT Rourkela', acceptance_rate: 0.02, jee_percentile: 92, board_percentage: 90, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'NIT Jamshedpur', acceptance_rate: 0.02, jee_percentile: 91, board_percentage: 89, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'NIT Nagpur', acceptance_rate: 0.02, jee_percentile: 91, board_percentage: 89, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'NIT Allahabad', acceptance_rate: 0.02, jee_percentile: 91, board_percentage: 89, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'NIT Kurukshetra', acceptance_rate: 0.02, jee_percentile: 91, board_percentage: 89, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'NIT Hamirpur', acceptance_rate: 0.02, jee_percentile: 90, board_percentage: 88, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'NIT Durgapur', acceptance_rate: 0.02, jee_percentile: 90, board_percentage: 88, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'NIT Silchar', acceptance_rate: 0.02, jee_percentile: 89, board_percentage: 87, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'NIT Meghalaya', acceptance_rate: 0.02, jee_percentile: 88, board_percentage: 86, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'NIT Manipur', acceptance_rate: 0.02, jee_percentile: 87, board_percentage: 85, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'NIT Mizoram', acceptance_rate: 0.02, jee_percentile: 86, board_percentage: 84, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'NIT Arunachal Pradesh', acceptance_rate: 0.02, jee_percentile: 85, board_percentage: 83, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'NIT Sikkim', acceptance_rate: 0.02, jee_percentile: 84, board_percentage: 82, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical' },
+
+            // Delhi NCR Colleges
+            { name: 'NSIT Delhi', acceptance_rate: 0.02, jee_percentile: 95, board_percentage: 93, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'IIIT Delhi', acceptance_rate: 0.02, jee_percentile: 94, board_percentage: 92, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, IT' },
+            { name: 'IGDTUW Delhi', acceptance_rate: 0.03, jee_percentile: 92, board_percentage: 90, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Jamia Millia Islamia', acceptance_rate: 0.03, jee_percentile: 90, board_percentage: 88, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Amity University Noida', acceptance_rate: 0.30, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Galgotias University', acceptance_rate: 0.30, jee_percentile: 80, board_percentage: 75, tuition: 200000, location: 'North', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Bennett University', acceptance_rate: 0.25, jee_percentile: 85, board_percentage: 80, tuition: 300000, location: 'North', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Shiv Nadar University', acceptance_rate: 0.20, jee_percentile: 88, board_percentage: 85, tuition: 350000, location: 'North', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Manav Rachna University', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Guru Gobind Singh Indraprastha University', acceptance_rate: 0.15, jee_percentile: 85, board_percentage: 80, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, Mechanical' },
+
+            // Additional Delhi NCR & Greater Noida Colleges
+            { name: 'Greater Noida Institute of Technology', acceptance_rate: 0.25, jee_percentile: 75, board_percentage: 70, tuition: 200000, location: 'North', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Noida Institute of Engineering and Technology', acceptance_rate: 0.25, jee_percentile: 75, board_percentage: 70, tuition: 200000, location: 'North', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'JSS Academy of Technical Education Noida', acceptance_rate: 0.20, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, IT' },
+            { name: 'IMS Engineering College Ghaziabad', acceptance_rate: 0.25, jee_percentile: 75, board_percentage: 70, tuition: 200000, location: 'North', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Ajay Kumar Garg Engineering College Ghaziabad', acceptance_rate: 0.20, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, IT' },
+            { name: 'KIET Group of Institutions Ghaziabad', acceptance_rate: 0.25, jee_percentile: 75, board_percentage: 70, tuition: 200000, location: 'North', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'ABES Engineering College Ghaziabad', acceptance_rate: 0.20, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, IT' },
+            { name: 'HMR Institute of Technology and Management Delhi', acceptance_rate: 0.25, jee_percentile: 75, board_percentage: 70, tuition: 200000, location: 'North', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Bharati Vidyapeeth College of Engineering Delhi', acceptance_rate: 0.20, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Maharaja Surajmal Institute of Technology', acceptance_rate: 0.25, jee_percentile: 75, board_percentage: 70, tuition: 200000, location: 'North', majors: 'Computer Science, Electronics, Mechanical' },
+
+            // South India Colleges
+            { name: 'VIT Vellore', acceptance_rate: 0.15, jee_percentile: 90, board_percentage: 92, tuition: 350000, location: 'South', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Manipal Institute of Technology', acceptance_rate: 0.20, jee_percentile: 88, board_percentage: 89, tuition: 400000, location: 'South', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'COEP Pune', acceptance_rate: 0.02, jee_percentile: 93, board_percentage: 91, tuition: 250000, location: 'South', majors: 'Computer Science, Electrical, Civil' },
+            { name: 'PSG Tech Coimbatore', acceptance_rate: 0.03, jee_percentile: 92, board_percentage: 90, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'SRM University Chennai', acceptance_rate: 0.25, jee_percentile: 85, board_percentage: 87, tuition: 300000, location: 'South', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Vellore Institute of Technology Chennai', acceptance_rate: 0.20, jee_percentile: 85, board_percentage: 85, tuition: 350000, location: 'South', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Sathyabama Institute of Science and Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Hindustan Institute of Technology', acceptance_rate: 0.30, jee_percentile: 75, board_percentage: 70, tuition: 200000, location: 'South', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'SASTRA University', acceptance_rate: 0.20, jee_percentile: 85, board_percentage: 85, tuition: 300000, location: 'South', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Amrita School of Engineering', acceptance_rate: 0.20, jee_percentile: 85, board_percentage: 85, tuition: 300000, location: 'South', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Kongu Engineering College', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Sri Venkateswara College of Engineering', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'Vel Tech University', acceptance_rate: 0.30, jee_percentile: 75, board_percentage: 70, tuition: 200000, location: 'South', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Karunya Institute of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Anna University Chennai', acceptance_rate: 0.02, jee_percentile: 92, board_percentage: 89, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, Civil' },
+
+            // West India Colleges
+            { name: 'Bharati Vidyapeeth Pune', acceptance_rate: 0.25, jee_percentile: 85, board_percentage: 87, tuition: 300000, location: 'West', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Symbiosis Institute of Technology', acceptance_rate: 0.20, jee_percentile: 90, board_percentage: 89, tuition: 350000, location: 'West', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Walchand College of Engineering', acceptance_rate: 0.02, jee_percentile: 91, board_percentage: 88, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'Sardar Patel College of Engineering', acceptance_rate: 0.02, jee_percentile: 90, board_percentage: 87, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'VJTI Mumbai', acceptance_rate: 0.02, jee_percentile: 91, board_percentage: 89, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'SPIT Mumbai', acceptance_rate: 0.02, jee_percentile: 90, board_percentage: 88, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, IT' },
+            { name: 'DJ Sanghvi College of Engineering', acceptance_rate: 0.02, jee_percentile: 89, board_percentage: 87, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'KJ Somaiya College of Engineering', acceptance_rate: 0.02, jee_percentile: 88, board_percentage: 86, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Mukesh Patel School of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 300000, location: 'West', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'NMIMS University', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 350000, location: 'West', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Pillai College of Engineering', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Thakur College of Engineering', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Fr. Agnel College of Engineering', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Don Bosco Institute of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Xavier Institute of Engineering', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, Mechanical' },
+
+            // East India Colleges
+            { name: 'KIIT University', acceptance_rate: 0.25, jee_percentile: 85, board_percentage: 87, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Jadavpur University', acceptance_rate: 0.02, jee_percentile: 92, board_percentage: 90, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'Bengal Engineering College', acceptance_rate: 0.02, jee_percentile: 91, board_percentage: 89, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Haldia Institute of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Heritage Institute of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Techno India University', acceptance_rate: 0.30, jee_percentile: 75, board_percentage: 70, tuition: 200000, location: 'East', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Netaji Subhash Engineering College', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'RCC Institute of Information Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Future Institute of Engineering', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Academy of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Asansol Engineering College', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Bankura Unnayani Institute of Engineering', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'Budge Budge Institute of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Calcutta Institute of Engineering', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Dr. B.C. Roy Engineering College', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Civil' },
+
+            // Central India Colleges
+            { name: 'Maulana Azad National Institute of Technology', acceptance_rate: 0.02, jee_percentile: 91, board_percentage: 89, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Shri G.S. Institute of Technology', acceptance_rate: 0.02, jee_percentile: 90, board_percentage: 88, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'Lakshmi Narain College of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Oriental College of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'SGSITS Indore', acceptance_rate: 0.02, jee_percentile: 90, board_percentage: 89, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'Institute of Engineering and Technology', acceptance_rate: 0.02, jee_percentile: 89, board_percentage: 88, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Shri Ram Institute of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, IT' },
+            { name: 'TIT Group of Institutions', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Radharaman Institute of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'Chameli Devi Group of Institutions', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Acropolis Institute of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Vikrant Institute of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Civil' },
+            { name: 'Truba Institute of Engineering', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Bansal Institute of Science and Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical' },
+            { name: 'Rustamji Institute of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Civil' },
+
+            // Additional Top Private Universities
+            { name: 'VIT Vellore', acceptance_rate: 0.15, jee_percentile: 90, board_percentage: 92, tuition: 350000, location: 'South', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Manipal Institute of Technology', acceptance_rate: 0.20, jee_percentile: 88, board_percentage: 89, tuition: 400000, location: 'South', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'SRM University Chennai', acceptance_rate: 0.25, jee_percentile: 85, board_percentage: 87, tuition: 300000, location: 'South', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Amrita School of Engineering', acceptance_rate: 0.20, jee_percentile: 85, board_percentage: 85, tuition: 300000, location: 'South', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'SASTRA University', acceptance_rate: 0.20, jee_percentile: 85, board_percentage: 85, tuition: 300000, location: 'South', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'PSG Tech Coimbatore', acceptance_rate: 0.03, jee_percentile: 92, board_percentage: 90, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Thapar Institute of Engineering', acceptance_rate: 0.15, jee_percentile: 88, board_percentage: 86, tuition: 350000, location: 'North', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Bennett University', acceptance_rate: 0.25, jee_percentile: 85, board_percentage: 80, tuition: 300000, location: 'North', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Shiv Nadar University', acceptance_rate: 0.20, jee_percentile: 88, board_percentage: 85, tuition: 350000, location: 'North', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'KIIT University', acceptance_rate: 0.25, jee_percentile: 85, board_percentage: 87, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+
+            // Additional Government Colleges
+            { name: 'NIT Patna', acceptance_rate: 0.02, jee_percentile: 92, board_percentage: 90, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'NIT Raipur', acceptance_rate: 0.02, jee_percentile: 91, board_percentage: 89, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'NIT Jaipur', acceptance_rate: 0.02, jee_percentile: 91, board_percentage: 89, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'NIT Bhopal', acceptance_rate: 0.02, jee_percentile: 91, board_percentage: 89, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'NIT Durgapur', acceptance_rate: 0.02, jee_percentile: 90, board_percentage: 88, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+
+            // Additional IIITs
+            { name: 'IIIT Allahabad', acceptance_rate: 0.02, jee_percentile: 94, board_percentage: 92, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, IT' },
+            { name: 'IIIT Gwalior', acceptance_rate: 0.02, jee_percentile: 93, board_percentage: 91, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, IT' },
+            { name: 'IIIT Jabalpur', acceptance_rate: 0.02, jee_percentile: 93, board_percentage: 91, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, IT' },
+            { name: 'IIIT Pune', acceptance_rate: 0.02, jee_percentile: 92, board_percentage: 90, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, IT' },
+            { name: 'IIIT Lucknow', acceptance_rate: 0.02, jee_percentile: 92, board_percentage: 90, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, IT' },
+
+            // Additional State Government Colleges
+            { name: 'COEP Pune', acceptance_rate: 0.02, jee_percentile: 93, board_percentage: 91, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'PES University Bangalore', acceptance_rate: 0.15, jee_percentile: 87, board_percentage: 85, tuition: 300000, location: 'South', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'MSIT Delhi', acceptance_rate: 0.03, jee_percentile: 92, board_percentage: 90, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Jadavpur University', acceptance_rate: 0.02, jee_percentile: 92, board_percentage: 90, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Osmania University', acceptance_rate: 0.03, jee_percentile: 91, board_percentage: 89, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+
+            // Additional Private Colleges in Delhi NCR
+            { name: 'Galgotias University', acceptance_rate: 0.30, jee_percentile: 80, board_percentage: 75, tuition: 200000, location: 'North', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Amity University Noida', acceptance_rate: 0.30, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Manav Rachna University', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Lovely Professional University', acceptance_rate: 0.35, jee_percentile: 75, board_percentage: 70, tuition: 200000, location: 'North', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Jaypee Institute of Information Technology', acceptance_rate: 0.25, jee_percentile: 82, board_percentage: 78, tuition: 250000, location: 'North', majors: 'Computer Science, Electronics, IT' },
+
+            // Additional Private Colleges in South India
+            { name: 'Sathyabama Institute of Science and Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Hindustan Institute of Technology', acceptance_rate: 0.30, jee_percentile: 75, board_percentage: 70, tuition: 200000, location: 'South', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Kongu Engineering College', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Sri Venkateswara College of Engineering', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'South', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Vel Tech University', acceptance_rate: 0.30, jee_percentile: 75, board_percentage: 70, tuition: 200000, location: 'South', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+
+            // Additional Private Colleges in West India
+            { name: 'Bharati Vidyapeeth Pune', acceptance_rate: 0.25, jee_percentile: 85, board_percentage: 87, tuition: 300000, location: 'West', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Symbiosis Institute of Technology', acceptance_rate: 0.20, jee_percentile: 90, board_percentage: 89, tuition: 350000, location: 'West', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Walchand College of Engineering', acceptance_rate: 0.02, jee_percentile: 91, board_percentage: 88, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Sardar Patel College of Engineering', acceptance_rate: 0.02, jee_percentile: 90, board_percentage: 87, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'VJTI Mumbai', acceptance_rate: 0.02, jee_percentile: 91, board_percentage: 89, tuition: 250000, location: 'West', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+
+            // Additional Private Colleges in East India
+            { name: 'Heritage Institute of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Techno India University', acceptance_rate: 0.30, jee_percentile: 75, board_percentage: 70, tuition: 200000, location: 'East', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Netaji Subhash Engineering College', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'RCC Institute of Information Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, IT' },
+            { name: 'Future Institute of Engineering', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'East', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+
+            // Additional Private Colleges in Central India
+            { name: 'Lakshmi Narain College of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Oriental College of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'SGSITS Indore', acceptance_rate: 0.02, jee_percentile: 90, board_percentage: 89, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Institute of Engineering and Technology', acceptance_rate: 0.02, jee_percentile: 89, board_percentage: 88, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' },
+            { name: 'Shri Ram Institute of Technology', acceptance_rate: 0.25, jee_percentile: 80, board_percentage: 75, tuition: 250000, location: 'Central', majors: 'Computer Science, Electronics, Mechanical, Civil, IT' }
+        ];
+
+        class CollegeRecommendationSystem {
+            constructor() {
+                this.colleges = colleges;
+                this.regionWeights = {
+                    'North': 1.2,
+                    'South': 1.2,
+                    'East': 1.2,
+                    'West': 1.2,
+                    'Central': 1.2
+                };
+            }
+
+            getRecommendations(preferences) {
+                let recommendations = this.colleges.map(college => ({
+                    ...college,
+                    match_score: 0,
+                    regional_score: 0,
+                    details: {
+                        jee_match: 0,
+                        board_match: 0,
+                        budget_match: 0,
+                        location_match: 0,
+                        major_match: 0,
+                        acceptance_bonus: 0
+                    }
+                }));
+
+                // Match based on JEE percentile (max 30 points)
+                if (preferences.jee_percentile) {
+                    const jee_percentile = parseInt(preferences.jee_percentile);
+                    recommendations.forEach(college => {
+                        const percentile_diff = Math.abs(college.jee_percentile - jee_percentile);
+                        let jee_score = 0;
+
+                        if (percentile_diff <= 1) {
+                            jee_score = 30; // Near perfect match
+                        } else if (percentile_diff <= 2) {
+                            jee_score = 25; // Very close match
+                        } else if (percentile_diff <= 3) {
+                            jee_score = 20; // Close match
+                        } else if (percentile_diff <= 5) {
+                            jee_score = 15; // Good match
+                        } else if (percentile_diff <= 8) {
+                            jee_score = 10; // Moderate match
+                        } else if (percentile_diff <= 12) {
+                            jee_score = 5;  // Far match
+                        }
+
+                        // Adjust score based on college tier
+                        if (college.name.includes('IIT')) {
+                            jee_score *= 1.2; // 20% bonus for IITs
+                        } else if (college.name.includes('NIT')) {
+                            jee_score *= 1.1; // 10% bonus for NITs
+                        }
+
+                        college.details.jee_match = Math.min(jee_score, 30);
+                        college.match_score += college.details.jee_match;
+                    });
+                }
+
+                // Match based on board percentage (max 20 points)
+                if (preferences.board_percentage) {
+                    const board_percentage = parseInt(preferences.board_percentage);
+                    recommendations.forEach(college => {
+                        const board_diff = Math.abs(college.board_percentage - board_percentage);
+                        let board_score = 0;
+
+                        if (board_diff <= 1) {
+                            board_score = 20; // Near perfect match
+                        } else if (board_diff <= 2) {
+                            board_score = 15; // Very close match
+                        } else if (board_diff <= 3) {
+                            board_score = 12; // Close match
+                        } else if (board_diff <= 5) {
+                            board_score = 8;  // Good match
+                        } else if (board_diff <= 8) {
+                            board_score = 5;  // Moderate match
+                        }
+
+                        college.details.board_match = board_score;
+                        college.match_score += board_score;
+                    });
+                }
+
+                // Match based on budget (max 20 points)
+                if (preferences.budget) {
+                    const budget = parseInt(preferences.budget);
+                    recommendations.forEach(college => {
+                        if (college.tuition <= budget) {
+                            const budget_ratio = college.tuition / budget;
+                            let budget_score = 0;
+
+                            if (budget_ratio <= 0.6) {
+                                budget_score = 20; // Well within budget
+                            } else if (budget_ratio <= 0.75) {
+                                budget_score = 15; // Comfortable within budget
+                            } else if (budget_ratio <= 0.85) {
+                                budget_score = 12; // Within budget with margin
+                            } else if (budget_ratio <= 0.95) {
+                                budget_score = 8;  // Just within budget
+                            } else {
+                                budget_score = 5;  // Barely within budget
+                            }
+
+                            // Bonus for government colleges (lower fees)
+                            if (college.name.includes('IIT') || college.name.includes('NIT')) {
+                                budget_score *= 1.2;
+                            }
+
+                            college.details.budget_match = Math.min(budget_score, 20);
+                            college.match_score += college.details.budget_match;
+                        }
+                    });
+                }
+
+                // Match based on location (max 15 points)
+                if (preferences.preferred_location) {
+                    recommendations.forEach(college => {
+                        let location_score = 0;
+
+                        if (college.location === preferences.preferred_location) {
+                            location_score = 15;
+
+                            // Additional benefits for preferred location
+                            if (college.name.includes('IIT') || college.name.includes('NIT')) {
+                                location_score += 3; // Bonus for government colleges in preferred location
+                            }
+
+                            // Bonus for better acceptance rate in preferred location
+                            if (college.acceptance_rate > 0.02) {
+                                location_score += 2;
+                            }
+                        }
+
+                        college.details.location_match = location_score;
+                        college.match_score += location_score;
+                    });
+                }
+
+                // Match based on majors (max 15 points)
+                if (preferences.preferred_majors && preferences.preferred_majors.length > 0) {
+                    recommendations.forEach(college => {
+                        const matching_majors = preferences.preferred_majors.filter(major =>
+                            college.majors.includes(major)
+                        );
+
+                        if (matching_majors.length > 0) {
+                            // Base score on number of matching majors
+                            let major_score = (matching_majors.length / preferences.preferred_majors.length) * 12;
+
+                            // Bonus for having all preferred majors
+                            if (matching_majors.length === preferences.preferred_majors.length) {
+                                major_score += 3;
+                            }
+
+                            // Bonus for having more majors available
+                            const total_majors = college.majors.split(',').length;
+                            if (total_majors > 3) {
+                                major_score += 2;
+                            }
+
+                            college.details.major_match = Math.min(major_score, 15);
+                            college.match_score += college.details.major_match;
+                        }
+                    });
+                }
+
+                // Acceptance rate bonus (max 5 points)
+                recommendations.forEach(college => {
+                    let acceptance_bonus = 0;
+
+                    if (college.acceptance_rate <= 0.01) {
+                        acceptance_bonus = 5; // Highly selective
+                    } else if (college.acceptance_rate <= 0.02) {
+                        acceptance_bonus = 3; // Very selective
+                    } else if (college.acceptance_rate <= 0.05) {
+                        acceptance_bonus = 2; // Selective
+                    } else if (college.acceptance_rate <= 0.1) {
+                        acceptance_bonus = 1; // Moderately selective
+                    }
+
+                    college.details.acceptance_bonus = acceptance_bonus;
+                    college.match_score += acceptance_bonus;
+                });
+
+                // Calculate categories with improved accuracy
+                if (preferences.jee_percentile) {
+                    const jee_percentile = parseInt(preferences.jee_percentile);
+                    recommendations.forEach(college => {
+                        const percentile_diff = college.jee_percentile - jee_percentile;
+
+                        // More nuanced categorization
+                        if (percentile_diff > 8) {
+                            college.category = 'Reach';
+                        } else if (percentile_diff > 5) {
+                            college.category = 'Moderate Reach';
+                        } else if (percentile_diff < -8) {
+                            college.category = 'Safety';
+                        } else if (percentile_diff < -5) {
+                            college.category = 'Moderate Safety';
+                        } else {
+                            college.category = 'Match';
+                        }
+                    });
+                }
+
+                // Normalize scores to ensure they don't exceed 100
+                recommendations.forEach(college => {
+                    college.match_score = Math.min(college.match_score, 100);
+                });
+
+                // Sort by match score with tiebreakers
+                recommendations.sort((a, b) => {
+                    // First compare match scores
+                    if (b.match_score !== a.match_score) {
+                        return b.match_score - a.match_score;
+                    }
+
+                    // If match scores are equal, prioritize government colleges
+                    const aIsGovt = a.name.includes('IIT') || a.name.includes('NIT');
+                    const bIsGovt = b.name.includes('IIT') || b.name.includes('NIT');
+                    if (aIsGovt !== bIsGovt) {
+                        return bIsGovt ? 1 : -1;
+                    }
+
+                    // If both are government or both are private, compare acceptance rates
+                    return b.acceptance_rate - a.acceptance_rate;
+                });
+
+                return recommendations;
+            }
+
+            explainRecommendation(college, preferences) {
+                const explanation = [];
+
+                // JEE percentile comparison with regional context
+                if (preferences.jee_percentile) {
+                    const jee_percentile = parseInt(preferences.jee_percentile);
+                    const percentile_diff = college.jee_percentile - jee_percentile;
+                    if (Math.abs(percentile_diff) <= 2) {
+                        explanation.push(`Your JEE percentile (${jee_percentile}) is very close to ${college.name}'s average (${college.jee_percentile}).`);
+                    } else if (percentile_diff > 2) {
+                        explanation.push(`${college.name}'s average JEE percentile (${college.jee_percentile}) is higher than yours (${jee_percentile}), making this a reach school.`);
+                    } else {
+                        explanation.push(`Your JEE percentile (${jee_percentile}) is higher than ${college.name}'s average (${college.jee_percentile}), making this a safety school.`);
+                    }
+                }
+
+                // Board percentage comparison
+                if (preferences.board_percentage) {
+                    const board_percentage = parseInt(preferences.board_percentage);
+                    const board_diff = college.board_percentage - board_percentage;
+                    if (Math.abs(board_diff) <= 2) {
+                        explanation.push(`Your 12th class board percentage (${board_percentage}%) matches well with ${college.name}'s average requirement (${college.board_percentage}%).`);
+                    } else if (board_diff > 2) {
+                        explanation.push(`Your 12th class board percentage (${board_percentage}%) is slightly below ${college.name}'s average requirement (${college.board_percentage}%).`);
+                    } else {
+                        explanation.push(`Your 12th class board percentage (${board_percentage}%) exceeds ${college.name}'s average requirement (${college.board_percentage}%).`);
+                    }
+                }
+
+                // Budget comparison with regional context
+                if (preferences.budget) {
+                    const budget = parseInt(preferences.budget);
+                    if (college.tuition <= budget) {
+                        explanation.push(`The annual tuition (₹${college.tuition.toLocaleString()}) is within your budget (₹${budget.toLocaleString()}).`);
+                        if (college.location === preferences.preferred_location) {
+                            explanation.push(`As a college in your preferred region, you may be eligible for additional scholarships or fee concessions.`);
+                        }
+                    } else {
+                        explanation.push(`The annual tuition (₹${college.tuition.toLocaleString()}) exceeds your budget (₹${budget.toLocaleString()}), but scholarships may be available.`);
+                    }
+                }
+
+                // Enhanced location match explanation
+                if (preferences.preferred_location) {
+                    if (college.location === preferences.preferred_location) {
+                        explanation.push(`Located in your preferred ${college.location} region, offering advantages like:`, [
+                            `- Familiar environment and culture`,
+                            `- Easier travel and accommodation`,
+                            `- Potential for local networking opportunities`,
+                            `- Possible regional scholarships and benefits`
+                        ].join(''));
+                    } else {
+                        explanation.push(`Located in ${college.location} region, which may require additional consideration for travel and accommodation.`);
+                    }
+                }
+
+                // Major match with regional context
+                if (preferences.preferred_majors && preferences.preferred_majors.length > 0) {
+                    const matching_majors = preferences.preferred_majors.filter(major => college.majors.includes(major));
+                    if (matching_majors.length > 0) {
+                        explanation.push(`It offers your preferred branch(es): ${matching_majors.join(', ')}.`);
+                        if (college.location === preferences.preferred_location) {
+                            explanation.push(`As a college in your preferred region, you may have better access to industry connections and internship opportunities in your chosen branch.`);
+                        }
+                    }
+                }
+
+                // Add acceptance rate information with regional context
+                explanation.push(`Acceptance rate: ${(college.acceptance_rate * 100).toFixed(1)}%`);
+                if (college.location === preferences.preferred_location) {
+                    explanation.push(`As a college in your preferred region, you may have a better chance of admission due to regional quotas and preferences.`);
+                }
+
+                return explanation;
+            }
+        }
+
+        // Create an instance of the recommendation system
+        const recommender = new CollegeRecommendationSystem();
+
+        // Form submission handler
+        document.getElementById('preference-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Show loading spinner
+            document.querySelector('.loading').style.display = 'block';
+            document.querySelector('.results-heading').style.display = 'none';
+            document.getElementById('results').style.display = 'none';
+
+            // Get form data
+            const formData = new FormData(this);
+            const preferences = {
+                jee_percentile: formData.get('jee_percentile'),
+                board_percentage: formData.get('board_percentage'),
+                budget: formData.get('budget'),
+                preferred_location: formData.get('preferred_location'),
+                preferred_majors: formData.getAll('preferred_majors')
+            };
+
+            // Get recommendations
+            const recommendations = recommender.getRecommendations(preferences);
+
+            // Hide loading spinner
+            document.querySelector('.loading').style.display = 'none';
+
+            // Show results heading
+            document.querySelector('.results-heading').style.display = 'block';
+
+            // Display results
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = '';
+
+            recommendations.slice(0, 10).forEach(college => {
+                let categoryClass = '';
+                let categoryBadge = '';
+
+                if (college.category === 'Reach') {
+                    categoryClass = 'reach';
+                    categoryBadge = '<span class="badge bg-danger">Reach</span>';
+                } else if (college.category === 'Match') {
+                    categoryClass = 'match';
+                    categoryBadge = '<span class="badge bg-success">Match</span>';
+                } else if (college.category === 'Safety') {
+                    categoryClass = 'safety';
+                    categoryBadge = '<span class="badge bg-info">Safety</span>';
+                }
+
+                const explanationItems = recommender.explainRecommendation(college, preferences)
+                    .map(item => `<li>${item}</li>`)
+                    .join('');
+
+                const collegeCard = `
+                        <div class="card ${categoryClass}">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div>${college.name} ${categoryBadge}</div>
+                            <div class="match-score">Match Score: ${college.match_score}</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                    <div class="college-details">
+                                        <h5>College Details</h5>
+                                        <ul>
+                                            <li>JEE Percentile: ${college.jee_percentile}</li>
+                                            <li>12th Class Board %: ${college.board_percentage}</li>
+                                            <li>Annual Tuition: ₹${college.tuition.toLocaleString()}</li>
+                                            <li>Acceptance Rate: ${(college.acceptance_rate * 100).toFixed(1)}%</li>
+                                            <li>Region: ${college.location}</li>
+                                        </ul>
+                                        <h6>Available Branches</h6>
+                                        <p>${college.majors}</p>
+                                    </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                    <div class="college-details">
+                                        <h5>Why This College Matches You</h5>
+                                        <ul class="explanation-list">
+                                            ${explanationItems}
+                                        </ul>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                resultsContainer.innerHTML += collegeCard;
+            });
+
+            resultsContainer.style.display = 'block';
+
+            // Scroll to results
+            document.querySelector('.results-heading').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Chatbot functionality
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            chatWindow.style.display = chatWindow.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function addMessage(message, isUser = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+
+            if (message) {
+                addMessage(message, true);
+                userInput.value = '';
+
+                // Process the message and generate response
+                setTimeout(() => {
+                    const response = generateResponse(message);
+                    addMessage(response);
+                }, 500);
+            }
+        }
+
+        function generateResponse(message) {
+            const lowerMessage = message.toLowerCase();
+
+            // Context tracking
+            if (!window.chatContext) {
+                window.chatContext = {
+                    lastTopic: null,
+                    userScore: null,
+                    userBudget: null,
+                    preferredLocation: null,
+                    preferredBranches: [],
+                    conversationStage: 'initial'
+                };
+            }
+
+            // Update context based on message
+            updateContext(lowerMessage);
+
+            // Generate AI response based on context and message
+            return generateAIResponse(lowerMessage);
+        }
+
+        function updateContext(message) {
+            const context = window.chatContext;
+
+            try {
+                // Detect JEE score with improved validation
+                const scoreMatch = message.match(/(\d{1,2}(?:\.\d{1,2})?)\s*(?:percentile|score|marks)/i);
+                if (scoreMatch) {
+                    const score = parseFloat(scoreMatch[1]);
+                    if (score >= 0 && score <= 100) {
+                        context.userScore = score;
+                    }
+                }
+
+                // Detect budget with improved validation
+                const budgetMatch = message.match(/(\d+(?:\.\d+)?)\s*(?:lakh|lac|k|thousand|crore)/i);
+                if (budgetMatch) {
+                    const amount = parseFloat(budgetMatch[1]);
+                    const unit = budgetMatch[2].toLowerCase();
+                    let multiplier = 1000;
+                    if (unit === 'lakh' || unit === 'lac') multiplier = 100000;
+                    if (unit === 'crore') multiplier = 10000000;
+                    context.userBudget = amount * multiplier;
+                }
+
+                // Detect location preference with improved validation
+                const locations = ['north', 'south', 'east', 'west', 'central'];
+                locations.forEach(loc => {
+                    if (message.includes(loc)) {
+                        context.preferredLocation = loc.charAt(0).toUpperCase() + loc.slice(1);
+                    }
+                });
+
+                // Detect branch preferences with improved validation
+                const branches = ['computer science', 'electronics', 'mechanical', 'civil', 'it', 'information technology'];
+                branches.forEach(branch => {
+                    if (message.includes(branch) && !context.preferredBranches.includes(branch)) {
+                        context.preferredBranches.push(branch);
+                    }
+                });
+
+                // Update conversation stage with improved context
+                if (message.includes('college') || message.includes('university')) {
+                    context.lastTopic = 'college';
+                } else if (message.includes('jee') || message.includes('preparation')) {
+                    context.lastTopic = 'jee';
+                } else if (message.includes('branch') || message.includes('stream')) {
+                    context.lastTopic = 'branch';
+                }
+            } catch (error) {
+                console.error('Error updating context:', error);
+            }
+        }
+
+        function generateAIResponse(message) {
+            const context = window.chatContext;
+            let response = '';
+
+            // Personalized college recommendations
+            if (context.userScore && (message.includes('college') || message.includes('recommend'))) {
+                const recommendations = getPersonalizedRecommendations(context);
+                response = `Based on your JEE percentile of ${context.userScore}%, here are some suitable colleges:\n\n${recommendations}`;
+            }
+
+            // JEE preparation guidance
+            else if (message.includes('jee') || message.includes('prepare') || message.includes('study')) {
+                response = generateJEEGuidance(context);
+            }
+
+            // Branch selection advice
+            else if (message.includes('branch') || message.includes('stream')) {
+                response = generateBranchAdvice(context);
+            }
+
+            // Admission process guidance
+            else if (message.includes('admission') || message.includes('process')) {
+                response = generateAdmissionGuidance(context);
+            }
+
+            // Fees and scholarships
+            else if (message.includes('fee') || message.includes('cost') || message.includes('scholarship')) {
+                response = generateFinancialAdvice(context);
+            }
+
+            // Location and campus
+            else if (message.includes('location') || message.includes('campus')) {
+                response = generateLocationAdvice(context);
+            }
+
+            // Placements
+            else if (message.includes('placement') || message.includes('job')) {
+                response = generatePlacementAdvice(context);
+            }
+
+            // Default response with context awareness
+            else {
+                response = generateContextualResponse(context);
+            }
+
+            return response;
+        }
+
+        function getPersonalizedRecommendations(context) {
+            try {
+                let recommendations = '';
+                const score = context.userScore;
+                const location = context.preferredLocation;
+                const budget = context.userBudget;
+
+                // Validate inputs
+                if (!score || score < 0 || score > 100) {
+                    return "Please provide a valid JEE percentile (0-100) for college recommendations.";
+                }
+
+                // Filter colleges based on score with improved accuracy
+                const suitableColleges = colleges.filter(college => {
+                    const scoreMatch = Math.abs(college.jee_percentile - score) <= 5;
+                    const locationMatch = !location || college.location === location;
+                    const budgetMatch = !budget || college.tuition <= budget;
+                    return scoreMatch && locationMatch && budgetMatch;
+                });
+
+                if (suitableColleges.length === 0) {
+                    return "No colleges found matching your criteria. Try adjusting your preferences or score range.";
+                }
+
+                // Sort by match score with improved accuracy
+                suitableColleges.sort((a, b) => {
+                    const scoreDiffA = Math.abs(a.jee_percentile - score);
+                    const scoreDiffB = Math.abs(b.jee_percentile - score);
+                    if (scoreDiffA === scoreDiffB) {
+                        return b.acceptance_rate - a.acceptance_rate;
+                    }
+                    return scoreDiffA - scoreDiffB;
+                });
+
+                // Generate recommendations with detailed information
+                recommendations = suitableColleges.slice(0, 5).map(college => {
+                    let matchType = 'Match';
+                    if (college.jee_percentile > score + 2) matchType = 'Reach';
+                    if (college.jee_percentile < score - 2) matchType = 'Safety';
+
+                    return `${college.name} (${matchType})
+• JEE Percentile Required: ${college.jee_percentile}%
+• Annual Tuition: ₹${college.tuition.toLocaleString()}
+• Location: ${college.location}
+• Available Branches: ${college.majors}
+• Acceptance Rate: ${(college.acceptance_rate * 100).toFixed(1)}%`;
+                }).join('\n\n');
+
+                return recommendations;
+            } catch (error) {
+                console.error('Error generating recommendations:', error);
+                return "Sorry, I encountered an error while generating recommendations. Please try again.";
+            }
+        }
+
+        function generateJEEGuidance(context) {
+            try {
+                let guidance = "Here's a personalized JEE preparation strategy:\n\n";
+
+                if (context.userScore) {
+                    if (context.userScore >= 95) {
+                        guidance += "You're performing exceptionally well! Focus on:\n";
+                        guidance += "1) Advanced problem-solving techniques\n";
+                        guidance += "2) Time management optimization (aim for 2 minutes per question)\n";
+                        guidance += "3) Mock test analysis and weak topic identification\n";
+                        guidance += "4) Previous year papers (last 5 years)\n";
+                        guidance += "5) Advanced level problems from IIT-JEE archives\n";
+                    } else if (context.userScore >= 85) {
+                        guidance += "You have a good foundation. Enhance your preparation with:\n";
+                        guidance += "1) Concept strengthening through NCERT and reference books\n";
+                        guidance += "2) Regular practice tests (3-4 per week)\n";
+                        guidance += "3) Topic-wise analysis of mock tests\n";
+                        guidance += "4) Time management practice\n";
+                        guidance += "5) Previous year papers (last 3 years)\n";
+                    } else {
+                        guidance += "Let's build a strong foundation:\n";
+                        guidance += "1) NCERT fundamentals (complete coverage)\n";
+                        guidance += "2) Basic problem-solving (30-40 problems daily)\n";
+                        guidance += "3) Regular study schedule (6-8 hours daily)\n";
+                        guidance += "4) Weekly topic tests\n";
+                        guidance += "5) Focus on accuracy before speed\n";
+                    }
+                } else {
+                    guidance += "1) Strong basics in Physics, Chemistry, and Mathematics\n";
+                    guidance += "2) Regular practice with previous year papers\n";
+                    guidance += "3) Time management (3 minutes per question initially)\n";
+                    guidance += "4) Mock tests (2-3 per week)\n";
+                    guidance += "5) Clear concepts through NCERT and reference books\n";
+                }
+
+                guidance += "\nWould you like specific tips for any subject?";
+                return guidance;
+            } catch (error) {
+                console.error('Error generating JEE guidance:', error);
+                return "Sorry, I encountered an error while generating JEE guidance. Please try again.";
+            }
+        }
+
+        function generateBranchAdvice(context) {
+            try {
+                let advice = "Based on current industry trends and opportunities:\n\n";
+
+                if (context.preferredBranches.length > 0) {
+                    advice += `Since you're interested in ${context.preferredBranches.join(", ")}:\n\n`;
+                }
+
+                const branchDetails = {
+                    'computer science': {
+                        title: "Computer Science",
+                        packages: "₹12-20 LPA (IITs/NITs), ₹8-15 LPA (Other Top Colleges)",
+                        opportunities: "Software Development, AI/ML, Data Science, Cloud Computing",
+                        companies: "Google, Microsoft, Amazon, Adobe, Oracle"
+                    },
+                    'electronics': {
+                        title: "Electronics",
+                        packages: "₹10-18 LPA (IITs/NITs), ₹6-12 LPA (Other Top Colleges)",
+                        opportunities: "VLSI, Embedded Systems, IoT, Semiconductor Design",
+                        companies: "Intel, Texas Instruments, Qualcomm, Samsung"
+                    },
+                    'mechanical': {
+                        title: "Mechanical",
+                        packages: "₹8-15 LPA (IITs/NITs), ₹5-10 LPA (Other Top Colleges)",
+                        opportunities: "Automotive, Manufacturing, Robotics, HVAC",
+                        companies: "Tata Motors, Mahindra, Bosch, Siemens"
+                    },
+                    'civil': {
+                        title: "Civil",
+                        packages: "₹6-12 LPA (IITs/NITs), ₹4-8 LPA (Other Top Colleges)",
+                        opportunities: "Construction, Infrastructure, Environmental Engineering",
+                        companies: "L&T, Shapoorji Pallonji, Gammon India"
+                    },
+                    'it': {
+                        title: "Information Technology",
+                        packages: "₹10-18 LPA (IITs/NITs), ₹6-12 LPA (Other Top Colleges)",
+                        opportunities: "Software Development, Cybersecurity, Cloud Computing",
+                        companies: "TCS, Infosys, Wipro, Accenture"
+                    }
+                };
+
+                Object.values(branchDetails).forEach(branch => {
+                    advice += `${branch.title}:\n`;
+                    advice += `   • Average Package: ${branch.packages}\n`;
+                    advice += `   • Career Opportunities: ${branch.opportunities}\n`;
+                    advice += `   • Top Recruiters: ${branch.companies}\n\n`;
+                });
+
+                return advice;
+            } catch (error) {
+                console.error('Error generating branch advice:', error);
+                return "Sorry, I encountered an error while generating branch advice. Please try again.";
+            }
+        }
+
+        function generateAdmissionGuidance(context) {
+            try {
+                let guidance = "Here's the detailed admission process breakdown:\n\n";
+
+                if (context.userScore) {
+                    guidance += `With your JEE percentile of ${context.userScore}%:\n\n`;
+                }
+
+                const processDetails = {
+                    registration: {
+                        title: "1) Counselling Registration",
+                        steps: [
+                            "Register for JoSAA/CSAB (Based on your category)",
+                            "Upload required documents (10th, 12th marksheets, JEE scorecard)",
+                            "Pay registration fee (₹20,000-₹35,000)",
+                            "Complete profile verification"
+                        ]
+                    },
+                    choiceFilling: {
+                        title: "2) Choice Filling",
+                        steps: [
+                            "Research colleges thoroughly (rankings, placements, infrastructure)",
+                            "Consider location and fees (tuition + hostel)",
+                            "Prioritize choices carefully (maximum 100 choices)",
+                            "Consider branch preferences and cutoffs"
+                        ]
+                    },
+                    seatAllotment: {
+                        title: "3) Seat Allotment",
+                        steps: [
+                            "Based on rank and choices (multiple rounds)",
+                            "Document verification at reporting center",
+                            "Accept/Reject/Freeze options",
+                            "Pay seat acceptance fee"
+                        ]
+                    },
+                    admission: {
+                        title: "4) Admission Process",
+                        steps: [
+                            "Accept allotted seat within deadline",
+                            "Pay admission fee (varies by college)",
+                            "Complete documentation",
+                            "Report to college on specified date"
+                        ]
+                    }
+                };
+
+                Object.values(processDetails).forEach(phase => {
+                    guidance += `${phase.title}:\n`;
+                    phase.steps.forEach(step => {
+                        guidance += `   • ${step}\n`;
+                    });
+                    guidance += "\n";
+                });
+
+                return guidance;
+            } catch (error) {
+                console.error('Error generating admission guidance:', error);
+                return "Sorry, I encountered an error while generating admission guidance. Please try again.";
+            }
+        }
+
+        function generateFinancialAdvice(context) {
+            try {
+                let advice = "Here's a comprehensive overview of college finances:\n\n";
+
+                if (context.userBudget) {
+                    advice += `With your budget of ₹${context.userBudget.toLocaleString()}:\n\n`;
+                }
+
+                const collegeTypes = {
+                    government: {
+                        title: "1) Government Colleges (IITs/NITs)",
+                        fees: {
+                            tuition: "₹2-2.5 lakhs/year",
+                            hostel: "₹50,000-1 lakh/year",
+                            mess: "₹30,000-40,000/year"
+                        },
+                        scholarships: [
+                            "Merit-cum-Means Scholarship",
+                            "National Scholarship Portal",
+                            "State Government Scholarships"
+                        ]
+                    },
+                    private: {
+                        title: "2) Private Colleges",
+                        fees: {
+                            tuition: "₹3-5 lakhs/year",
+                            hostel: "₹1-1.5 lakhs/year",
+                            mess: "₹40,000-50,000/year"
+                        },
+                        scholarships: [
+                            "Merit-based scholarships (up to 100% tuition fee)",
+                            "Sports scholarships",
+                            "Cultural scholarships"
+                        ]
+                    },
+                    topPrivate: {
+                        title: "3) Top Private Universities",
+                        fees: {
+                            tuition: "₹5-8 lakhs/year",
+                            hostel: "₹1.5-2 lakhs/year",
+                            mess: "₹50,000-60,000/year"
+                        },
+                        scholarships: [
+                            "Need-based financial aid",
+                            "Merit scholarships",
+                            "Corporate sponsorships"
+                        ]
+                    }
+                };
+
+                Object.values(collegeTypes).forEach(type => {
+                    advice += `${type.title}:\n`;
+                    advice += `   • Annual Tuition: ${type.fees.tuition}\n`;
+                    advice += `   • Hostel Fees: ${type.fees.hostel}\n`;
+                    advice += `   • Mess Fees: ${type.fees.mess}\n`;
+                    advice += `   • Available Scholarships:\n`;
+                    type.scholarships.forEach(scholarship => {
+                        advice += `     - ${scholarship}\n`;
+                    });
+                    advice += "\n";
+                });
+
+                return advice;
+            } catch (error) {
+                console.error('Error generating financial advice:', error);
+                return "Sorry, I encountered an error while generating financial advice. Please try again.";
+            }
+        }
+
+        function generateLocationAdvice(context) {
+            try {
+                let advice = "Location considerations for college selection:\n\n";
+
+                if (context.preferredLocation) {
+                    advice += `Since you're interested in ${context.preferredLocation} India:\n\n`;
+                }
+
+                const regionDetails = {
+                    north: {
+                        title: "North India",
+                        advantages: [
+                            "Delhi NCR hub (strong industry presence)",
+                            "IITs and NITs (Delhi, Kanpur, Roorkee)",
+                            "Excellent infrastructure and connectivity",
+                            "High placement opportunities"
+                        ],
+                        challenges: [
+                            "Higher cost of living",
+                            "Pollution concerns",
+                            "Competitive environment"
+                        ]
+                    },
+                    south: {
+                        title: "South India",
+                        advantages: [
+                            "Tech hub (Bangalore, Chennai, Hyderabad)",
+                            "Pleasant climate year-round",
+                            "Strong research ecosystem",
+                            "Growing startup culture"
+                        ],
+                        challenges: [
+                            "Language barrier for non-south Indians",
+                            "Higher humidity",
+                            "Distance from north India"
+                        ]
+                    },
+                    east: {
+                        title: "East India",
+                        advantages: [
+                            "Growing infrastructure",
+                            "Cost-effective living",
+                            "Emerging tech parks",
+                            "Rich cultural heritage"
+                        ],
+                        challenges: [
+                            "Limited industry presence",
+                            "Infrastructure development needed",
+                            "Fewer top-tier colleges"
+                        ]
+                    },
+                    west: {
+                        title: "West India",
+                        advantages: [
+                            "Mumbai-Pune corridor",
+                            "Strong industrial base",
+                            "Excellent placement opportunities",
+                            "Diverse culture"
+                        ],
+                        challenges: [
+                            "High cost of living in Mumbai",
+                            "Traffic congestion",
+                            "Limited space in major cities"
+                        ]
+                    },
+                    central: {
+                        title: "Central India",
+                        advantages: [
+                            "Strategic location",
+                            "Affordable living",
+                            "Growing opportunities",
+                            "Good connectivity"
+                        ],
+                        challenges: [
+                            "Limited top-tier colleges",
+                            "Infrastructure development needed",
+                            "Fewer industry hubs"
+                        ]
+                    }
+                };
+
+                Object.values(regionDetails).forEach(region => {
+                    advice += `${region.title}:\n`;
+                    advice += `   Advantages:\n`;
+                    region.advantages.forEach(adv => {
+                        advice += `   • ${adv}\n`;
+                    });
+                    advice += `   Challenges:\n`;
+                    region.challenges.forEach(chal => {
+                        advice += `   • ${chal}\n`;
+                    });
+                    advice += "\n";
+                });
+
+                return advice;
+            } catch (error) {
+                console.error('Error generating location advice:', error);
+                return "Sorry, I encountered an error while generating location advice. Please try again.";
+            }
+        }
+
+        function generatePlacementAdvice(context) {
+            try {
+                let advice = "Placement opportunities and trends:\n\n";
+
+                if (context.preferredBranches.length > 0) {
+                    advice += `For ${context.preferredBranches.join(", ")} graduates:\n\n`;
+                }
+
+                const placementDetails = {
+                    recruiters: {
+                        title: "1) Top Recruiters by Sector",
+                        sectors: {
+                            "Tech Companies": "Google, Microsoft, Amazon, Adobe, Oracle",
+                            "Core Companies": "Tata Motors, L&T, Mahindra, Bosch",
+                            "Research": "ISRO, DRDO, BARC, CSIR",
+                            "Consulting": "McKinsey, BCG, Deloitte, KPMG"
+                        }
+                    },
+                    packages: {
+                        title: "2) Average Packages by College Tier",
+                        tiers: {
+                            "IITs": "₹15-20 LPA (Top 5), ₹12-15 LPA (Others)",
+                            "NITs": "₹8-12 LPA (Top 5), ₹6-10 LPA (Others)",
+                            "Top Private": "₹6-10 LPA",
+                            "Other Colleges": "₹4-8 LPA"
+                        }
+                    },
+                    process: {
+                        title: "3) Placement Process",
+                        steps: [
+                            "Pre-placement talks (August-September)",
+                            "Resume submission and shortlisting",
+                            "Technical interviews and tests",
+                            "HR interviews and offers",
+                            "Internship opportunities (6-8 months)"
+                        ]
+                    },
+                    growth: {
+                        title: "4) Career Growth Path",
+                        paths: [
+                            "Technical Track: Junior Engineer → Senior Engineer → Tech Lead → Architect",
+                            "Management Track: Team Lead → Project Manager → Program Manager → Director",
+                            "Research Track: Research Engineer → Research Scientist → Principal Scientist",
+                            "Entrepreneurship: Start your own tech company or join startups"
+                        ]
+                    }
+                };
+
+                Object.values(placementDetails).forEach(section => {
+                    advice += `${section.title}:\n`;
+                    if (section.sectors) {
+                        Object.entries(section.sectors).forEach(([sector, companies]) => {
+                            advice += `   • ${sector}: ${companies}\n`;
+                        });
+                    } else if (section.tiers) {
+                        Object.entries(section.tiers).forEach(([tier, package]) => {
+                            advice += `   • ${tier}: ${package}\n`;
+                        });
+                    } else if (section.steps) {
+                        section.steps.forEach(step => {
+                            advice += `   • ${step}\n`;
+                        });
+                    } else if (section.paths) {
+                        section.paths.forEach(path => {
+                            advice += `   • ${path}\n`;
+                        });
+                    }
+                    advice += "\n";
+                });
+
+                return advice;
+            } catch (error) {
+                console.error('Error generating placement advice:', error);
+                return "Sorry, I encountered an error while generating placement advice. Please try again.";
+            }
+        }
+
+        function generateContextualResponse(context) {
+            try {
+                if (context.lastTopic) {
+                    switch (context.lastTopic) {
+                        case 'jee':
+                            return "Would you like more specific guidance on JEE preparation? I can help with:\n1) Subject-wise study strategies\n2) Time management techniques\n3) Mock test analysis\n4) Previous year paper solutions";
+                        case 'college':
+                            return "I can help you find colleges matching your JEE score and preferences. Please share:\n1) Your JEE percentile\n2) Preferred location\n3) Budget range\n4) Branch preferences";
+                        case 'branch':
+                            return "I can provide detailed information about different branches. Would you like to know about:\n1) Career prospects\n2) Average packages\n3) Top recruiters\n4) Future growth opportunities";
+                        default:
+                            return "I can help you with:\n1) JEE preparation strategies\n2) College selection and rankings\n3) Branch-wise career guidance\n4) Admission process details\n5) Financial planning\n6) Placement insights\nWhat would you like to know?";
+                    }
+                }
+                return "I can help you with:\n1) JEE preparation strategies\n2) College selection and rankings\n3) Branch-wise career guidance\n4) Admission process details\n5) Financial planning\n6) Placement insights\nWhat would you like to know?";
+            } catch (error) {
+                console.error('Error generating contextual response:', error);
+                return "I can help you with JEE preparation, college selection, branch choices, admission process, fees, scholarships, placements, and more. What would you like to know?";
+            }
+        }
+
+        // Add user-specific storage functions
+        function getUserKey() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            return currentUser ? `recommendations_${currentUser.email}` : 'recommendations_guest';
+        }
+
+        function saveUserPreferences(preferences) {
+            const userKey = getUserKey();
+            localStorage.setItem(userKey, JSON.stringify(preferences));
+        }
+
+        function getUserPreferences() {
+            const userKey = getUserKey();
+            return JSON.parse(localStorage.getItem(userKey)) || {};
+        }
+
+        // Modify the form submission handler
+        document.getElementById('preference-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                alert('Please login to get personalized recommendations');
+                window.location.href = '../login/index.html';
+                return;
+            }
+
+            const jeePercentile = parseFloat(document.getElementById('jee_percentile').value);
+            const boardPercentage = parseFloat(document.getElementById('board_percentage').value);
+            const budget = parseFloat(document.getElementById('budget').value);
+            const location = document.getElementById('preferred_location').value;
+            const branches = Array.from(document.getElementById('preferred_majors').selectedOptions).map(option => option.value);
+
+            // Save user preferences
+            const preferences = {
+                jeePercentile,
+                boardPercentage,
+                budget,
+                location,
+                branches,
+                timestamp: new Date().toISOString()
+            };
+            saveUserPreferences(preferences);
+
+            // Get recommendations
+            const recommendations = getRecommendations(jeePercentile, boardPercentage, budget, location, branches);
+            displayRecommendations(recommendations);
+        });
+
+        // Add function to load previous recommendations
+        function loadPreviousRecommendations() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                document.getElementById('previousRecommendations').style.display = 'none';
+                return;
+            }
+
+            const preferences = getUserPreferences();
+            if (preferences && preferences.timestamp) {
+                document.getElementById('previousRecommendations').style.display = 'block';
+                document.getElementById('lastUpdated').textContent = new Date(preferences.timestamp).toLocaleString();
+
+                // Pre-fill the form with previous values
+                if (preferences.jeePercentile) document.getElementById('jee_percentile').value = preferences.jeePercentile;
+                if (preferences.boardPercentage) document.getElementById('board_percentage').value = preferences.boardPercentage;
+                if (preferences.budget) document.getElementById('budget').value = preferences.budget;
+                if (preferences.location) document.getElementById('preferred_location').value = preferences.location;
+                if (preferences.branches) {
+                    const branchSelect = document.getElementById('preferred_majors');
+                    preferences.branches.forEach(branch => {
+                        Array.from(branchSelect.options).forEach(option => {
+                            if (option.value === branch) option.selected = true;
+                        });
+                    });
+                }
+            } else {
+                document.getElementById('previousRecommendations').style.display = 'none';
+            }
+        }
+
+        // Call this when the page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            loadPreviousRecommendations();
+        });
+    </script>
+</body>
+
+</html>
